@@ -61,6 +61,7 @@ impl PemCertificate {
             organization: "".to_string(),
             country_code: "".to_string(),
             city: "".to_string(),
+            email: "".to_string(),
         };
         for entry in common_name {
             result.ca_cn = entry.data().as_utf8().unwrap().trim().to_string();

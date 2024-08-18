@@ -37,6 +37,7 @@ async fn handle_request(
             organization: input_data.organization,
             country_code: input_data.country_code,
             city: input_data.city,
+            email: input_data.email,
         },
     )
     .await;
@@ -57,4 +58,7 @@ pub struct GenerateCaInputModel {
 
     #[http_body(name = "city", description = "City")]
     pub city: String,
+
+    #[http_body(name = "email", description = "Organization email")]
+    pub email: String,
 }

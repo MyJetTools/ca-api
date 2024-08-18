@@ -5,6 +5,28 @@ use tokio::process::Command;
 use crate::{app::AppContext, pem::PemCertInfo};
 
 pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
+    init_vars(app, &cert_info).await;
+    let easy_rsa_command = app.get_easy_rsa_command();
+
+    let result = Command::new(easy_rsa_command.as_str())
+        .arg("init-pki")
+        .output()
+        .await
+        .unwrap();
+
+    println!("Init PKI Output: {:?}", result);
+
+    let result = Command::new(easy_rsa_command.as_str())
+        .arg("--batch")
+        .arg("build-ca nopass")
+        .arg("nopass")
+        .output()
+        .await
+        .unwrap();
+
+    println!("Build CA Output: {:?}", result);
+
+    /*
     let ca_path = app
         .settings
         .get_config_path()
@@ -61,6 +83,7 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
 
     println!("Generating CA Private Key Output: {:?}", output);
 
+     */
     // Generate a 2048 bit RSA private key for the CA
     /*
     let rsa_ca = Rsa::generate(4096).unwrap();
@@ -108,4 +131,31 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
 
     crate::storage::ca::write(app, &cert_info, cert_ca.into(), p_key_ca.into()).await
      */
+}
+
+async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
+    let mut to_write = String::new();
+
+    to_write.push_str(format!("set_var EASYRSA_REQ_CN \"{}\"\n", cert_info.ca_cn).as_str());
+    to_write.push_str(
+        format!(
+            "set_var EASYRSA_REQ_COUNTRY \"{}\"\n",
+            cert_info.country_code
+        )
+        .as_str(),
+    );
+    to_write.push_str(format!("set_var EASYRSA_REQ_PROVINCE \"{}\"\n", cert_info.city).as_str());
+    to_write.push_str(format!("set_var EASYRSA_REQ_CITY \"{}\"\n", cert_info.city).as_str());
+    to_write.push_str(format!("set_var EASYRSA_REQ_ORG \"{}\"\n", cert_info.organization).as_str());
+    to_write.push_str(format!("set_var EASYRSA_REQ_EMAIL \"{}\"\n", cert_info.email).as_str());
+
+    to_write.push_str("set_var EASYRSA_KEY_SIZE 4096 \n");
+    to_write.push_str("set_var EASYRSA_CA_EXPIRE 3650 \n");
+    to_write.push_str("set_var EASYRSA_CERT_EXPIRE 3650 \n");
+
+    let file_path = app.get_vars_path();
+
+    tokio::fs::write(file_path, to_write.as_str())
+        .await
+        .unwrap();
 }

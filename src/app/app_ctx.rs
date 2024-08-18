@@ -21,4 +21,12 @@ impl AppContext {
             settings: settings_reader.get_settings().await,
         }
     }
+
+    pub fn get_easy_rsa_command(&self) -> String {
+        "/usr/share/easy-rsa".to_string()
+    }
+
+    pub fn get_vars_path(&self) -> &str {
+        "/usr/share/vars"
+    }
 }
