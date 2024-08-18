@@ -17,8 +17,7 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
     println!("Init PKI Output: {:?}", result);
 
     let result = Command::new(easy_rsa_command.as_str())
-        .arg("--batch")
-        .arg("build-ca nopass")
+        .arg("build-ca")
         .arg("nopass")
         .output()
         .await
