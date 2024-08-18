@@ -27,6 +27,6 @@ impl AppContext {
     }
 
     pub fn get_vars_path(&self) -> &str {
-        "/usr/share/vars"
+        "/usr/share/easy-rsa/vars"
     }
 }
