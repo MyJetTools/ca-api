@@ -135,7 +135,7 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
 async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
     let mut to_write = String::new();
 
-    to_write.push_str("set_var EASYRSA_DN \"org\"\n");
+    to_write.push_str("set_var EASYRSA_DN \"cn_only\"\n");
     to_write.push_str(format!("set_var EASYRSA_REQ_CN \"{}\"\n", cert_info.ca_cn).as_str());
     to_write.push_str(
         format!(
