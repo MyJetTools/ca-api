@@ -135,6 +135,7 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
 async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
     let mut to_write = String::new();
 
+    to_write.push_str("set_var EASYRSA_DN \"org\"\n");
     to_write.push_str(format!("set_var EASYRSA_REQ_CN \"{}\"\n", cert_info.ca_cn).as_str());
     to_write.push_str(
         format!(
@@ -148,9 +149,9 @@ async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
     to_write.push_str(format!("set_var EASYRSA_REQ_ORG \"{}\"\n", cert_info.organization).as_str());
     to_write.push_str(format!("set_var EASYRSA_REQ_EMAIL \"{}\"\n", cert_info.email).as_str());
 
-    to_write.push_str("set_var EASYRSA_KEY_SIZE 4096 \n");
-    to_write.push_str("set_var EASYRSA_CA_EXPIRE 3650 \n");
-    to_write.push_str("set_var EASYRSA_CERT_EXPIRE 3650 \n");
+    to_write.push_str("set_var EASYRSA_KEY_SIZE 4096\n");
+    to_write.push_str("set_var EASYRSA_CA_EXPIRE 3650\n");
+    to_write.push_str("set_var EASYRSA_CERT_EXPIRE 3650\n");
 
     let file_path = app.get_vars_path();
 
