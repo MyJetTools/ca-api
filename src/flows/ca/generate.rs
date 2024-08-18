@@ -148,6 +148,7 @@ async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
     to_write.push_str(format!("set_var EASYRSA_REQ_CITY \"{}\"\n", cert_info.city).as_str());
     to_write.push_str(format!("set_var EASYRSA_REQ_ORG \"{}\"\n", cert_info.organization).as_str());
     to_write.push_str(format!("set_var EASYRSA_REQ_EMAIL \"{}\"\n", cert_info.email).as_str());
+    to_write.push_str(format!("set_var EASYRSA_REQ_OU \"IT\"\n").as_str());
 
     to_write.push_str("set_var EASYRSA_KEY_SIZE 4096\n");
     to_write.push_str("set_var EASYRSA_CA_EXPIRE 3650\n");
@@ -155,6 +156,11 @@ async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
 
     let file_path = app.get_vars_path();
 
+    tokio::fs::write(file_path, to_write.as_str())
+        .await
+        .unwrap();
+
+    let file_path = app.get_pki_vars_path();
     tokio::fs::write(file_path, to_write.as_str())
         .await
         .unwrap();

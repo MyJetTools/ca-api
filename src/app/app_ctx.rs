@@ -29,4 +29,8 @@ impl AppContext {
     pub fn get_vars_path(&self) -> &str {
         "/usr/share/easy-rsa/vars"
     }
+
+    pub fn get_pki_vars_path(&self) -> &str {
+        "/usr/share/easy-rsa/pki/vars"
+    }
 }
