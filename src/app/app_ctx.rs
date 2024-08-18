@@ -23,7 +23,7 @@ impl AppContext {
     }
 
     pub fn get_easy_rsa_command(&self) -> String {
-        "/usr/share/easy-rsa".to_string()
+        "/usr/share/easy-rsa/easyrsa".to_string()
     }
 
     pub fn get_vars_path(&self) -> &str {
