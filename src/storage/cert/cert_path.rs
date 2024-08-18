@@ -65,6 +65,16 @@ impl ClientCertPath {
         result.into_file_name(PRIVATE_KEY_FILE_NAME)
     }
 
+    pub fn to_certificate_request_file_name(&self) -> String {
+        let result = self.clone();
+        result.into_file_name("cert.csr")
+    }
+
+    pub fn to_pfx_file_name(&self) -> String {
+        let result = self.clone();
+        result.into_file_name("cert.pfx")
+    }
+
     pub fn to_public_key_file_name(&self) -> String {
         let result = self.clone();
         result.into_file_name(PUBLIC_KEY_FILE_NAME)

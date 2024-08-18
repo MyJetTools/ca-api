@@ -1,9 +1,9 @@
 use crate::{app::AppContext, flows::FlowError, pem::PemCertificate};
 
 pub async fn check_if_we_have_ca_cert(app: &AppContext, ca_cn: &str) -> Result<(), FlowError> {
-    let ca_cert_file = app.settings.get_config_path().into_ca_data_path(ca_cn);
+    let ca_data_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
 
-    let cert_file_name = ca_cert_file.to_cert_file_name();
+    let cert_file_name = ca_data_path.to_ca_cert_file_name();
 
     let content = tokio::fs::read(cert_file_name.as_str()).await;
 

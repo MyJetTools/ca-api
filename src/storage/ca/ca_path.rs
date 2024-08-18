@@ -1,3 +1,5 @@
+use crate::storage::cert::ClientCertPath;
+
 const CA_CERT_FILE_NAME: &str = "ca_cert.pem";
 
 const CA_PRIVATE_KEY_FILE_NAME: &str = "ca_private_key.pem";
@@ -40,12 +42,16 @@ impl CaDataPath {
         result
     }
 
+    pub fn into_client_cert_path(self, email: &str) -> ClientCertPath {
+        ClientCertPath::from_ca_path(self, email)
+    }
+
     pub fn into_cert_file_name(self) -> String {
         self.into_file_name(CA_CERT_FILE_NAME)
     }
 
-    pub fn to_cert_file_name(&self) -> String {
-        let result = self.clone();
+    pub fn to_ca_cert_file_name(&self) -> String {
+        let result: CaDataPath = self.clone();
         result.into_file_name(CA_CERT_FILE_NAME)
     }
 
@@ -53,7 +59,7 @@ impl CaDataPath {
         self.into_file_name(CA_PRIVATE_KEY_FILE_NAME)
     }
 
-    pub fn to_private_key_file_name(&self) -> String {
+    pub fn to_ca_private_key_file_name(&self) -> String {
         let result = self.clone();
         result.into_file_name(CA_PRIVATE_KEY_FILE_NAME)
     }
@@ -67,6 +73,10 @@ impl CaDataPath {
         result.into_file_name(SERIAL_FILE_NAME)
     }
 
+    pub fn to_pfx_file_name(&self) -> String {
+        let result = self.clone();
+        result.into_file_name("ca.pfx")
+    }
     /*
        pub fn into_index_file_name(self) -> String {
            self.into_file_name(INDEX_FILE_NAME)
@@ -95,6 +105,11 @@ impl CaDataPath {
     pub fn to_config_file_name(&self) -> String {
         let result = self.clone();
         result.into_file_name(CONFIG_FILE_NAME)
+    }
+
+    pub fn to_ca_certs_path(&self) -> String {
+        let result = self.clone();
+        result.into_file_name("certs")
     }
 
     pub fn into_crl_file_name(self) -> String {

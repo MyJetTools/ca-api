@@ -1,12 +1,6 @@
 use std::sync::Arc;
 
-use openssl::{
-    hash::MessageDigest,
-    nid::Nid,
-    pkey::PKey,
-    rsa::Rsa,
-    x509::{X509NameBuilder, X509ReqBuilder, X509},
-};
+use tokio::process::Command;
 
 use crate::app::AppContext;
 
@@ -17,6 +11,68 @@ pub async fn generate_cert(
     ca_cn: &str,
     email: &str,
 ) -> Result<(), FlowError> {
+    let ca_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
+
+    let config_file_name = ca_path.to_config_file_name();
+
+    println!("Config: {}", config_file_name);
+
+    let client_cert_path = ca_path.into_client_cert_path(email);
+
+    let _ = tokio::fs::create_dir_all(client_cert_path.as_str()).await;
+
+    let private_key_file_name = client_cert_path.to_private_key_file_name();
+    let cert_request_file_name = client_cert_path.to_certificate_request_file_name();
+    let client_cert_file_name = client_cert_path.to_cert_file_name();
+
+    println!("Generating Client Certificate Private Key");
+    let output = Command::new("openssl")
+        .arg("genpkey")
+        .arg("-algorithm")
+        .arg("RSA")
+        .arg("-out")
+        .arg(private_key_file_name.as_str())
+        .output()
+        .await
+        .unwrap();
+    println!(
+        "Generating Client Certificate Private Key Output: {:?}",
+        output
+    );
+
+    println!("Generating Client Certificate CSR");
+    let output = Command::new("openssl")
+        .arg("req")
+        .arg("-new")
+        .arg("-key")
+        .arg(private_key_file_name.as_str())
+        .arg("-out")
+        .arg(cert_request_file_name.as_str())
+        .arg("-config")
+        .arg(config_file_name.as_str())
+        .output()
+        .await
+        .unwrap();
+    println!("Generating Client Certificate CSR Output: {:?}", output);
+
+    println!("Generating Client Certificate");
+    let output = Command::new("openssl")
+        .arg("ca")
+        .arg("-config")
+        .arg(config_file_name.as_str())
+        .arg("-in")
+        .arg(cert_request_file_name.as_str())
+        .arg("-out")
+        .arg(client_cert_file_name.as_str())
+        .arg("-days")
+        .arg("3650")
+        .arg("-batch")
+        .output()
+        .await
+        .unwrap();
+    println!("Generating Client Certificate Output: {:?}", output);
+
+    /*
     println!("Loading private key");
     let ca_private_key = crate::storage::ca::load_private_key(app, ca_cn).await;
 
@@ -92,5 +148,6 @@ pub async fn generate_cert(
         .await
         .unwrap();
 
+         */
     Ok(())
 }

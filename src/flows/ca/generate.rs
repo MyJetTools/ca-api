@@ -1,17 +1,68 @@
 use std::sync::Arc;
 
-use openssl::{
-    hash::MessageDigest,
-    nid::Nid,
-    pkey::PKey,
-    rsa::Rsa,
-    x509::{extension::BasicConstraints, X509NameBuilder, X509},
-};
+use tokio::process::Command;
 
 use crate::{app::AppContext, pem::PemCertInfo};
 
 pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
+    let ca_path = app
+        .settings
+        .get_config_path()
+        .into_ca_data_path(&cert_info.ca_cn);
+
+    let ca_private_key_file_name = ca_path.to_ca_private_key_file_name();
+
+    let ca_cert_file_name = ca_path.to_ca_cert_file_name();
+
+    let config_file_name = ca_path.to_config_file_name();
+
+    let ca_certs_path = ca_path.to_ca_certs_path();
+
+    crate::storage::ca::init(
+        app,
+        &cert_info,
+        ca_cert_file_name.as_str(),
+        ca_private_key_file_name.as_str(),
+        config_file_name.as_str(),
+        ca_certs_path.as_str(),
+    )
+    .await;
+
+    println!("Generating CA Private Key");
+    let output = Command::new("openssl")
+        .arg("genpkey")
+        .arg("-algorithm")
+        .arg("RSA")
+        .arg("-out")
+        .arg(ca_private_key_file_name.as_str())
+        .output()
+        .await
+        .unwrap();
+
+    println!("Generating CA Private Key Output: {:?}", output);
+
+    println!("Generating CA Root Certificate");
+    let output = Command::new("openssl")
+        .arg("req")
+        .arg("-x509")
+        .arg("-new")
+        .arg("-key")
+        .arg(ca_private_key_file_name.as_str())
+        .arg("-sha256")
+        .arg("-days")
+        .arg("3650")
+        .arg("-out")
+        .arg(ca_cert_file_name.as_str())
+        .arg("-config")
+        .arg(config_file_name.as_str())
+        .output()
+        .await
+        .unwrap();
+
+    println!("Generating CA Private Key Output: {:?}", output);
+
     // Generate a 2048 bit RSA private key for the CA
+    /*
     let rsa_ca = Rsa::generate(4096).unwrap();
     let p_key_ca = PKey::from_rsa(rsa_ca).unwrap();
 
@@ -56,4 +107,5 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
     let cert_ca = cert_builder.build();
 
     crate::storage::ca::write(app, &cert_info, cert_ca.into(), p_key_ca.into()).await
+     */
 }

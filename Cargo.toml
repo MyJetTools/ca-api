@@ -31,3 +31,4 @@ my-tls = { git = "https://github.com/MyJetTools/my-tls.git", tag = "0.1.1", feat
     "crl",
 ] }
 openssl = "*"
+pkcs12 = "*"

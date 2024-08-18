@@ -7,9 +7,9 @@ use super::FlowError;
 pub async fn revoke_cert(app: &AppContext, ca_cn: &str, email: &str) -> Result<(), FlowError> {
     let ca_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
 
-    let ca_private_key_file_name = ca_path.to_private_key_file_name();
+    let ca_private_key_file_name = ca_path.to_ca_private_key_file_name();
 
-    let ca_cert_file_name = ca_path.to_cert_file_name();
+    let ca_cert_file_name = ca_path.to_ca_cert_file_name();
     let config_file_name = ca_path.to_config_file_name();
 
     let crl_pem_file = ca_path.to_crl_file_name();
