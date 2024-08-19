@@ -30,15 +30,13 @@ async fn handle_request(
     input_data: RevokeClientCertInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    crate::flows::revoke_cert(&action.app, &input_data.ca_name, &input_data.email).await?;
+    crate::flows::revoke_client_cert(&action.app, &input_data.email).await?;
 
     HttpOutput::Empty.into_ok_result(true)
 }
 
 #[derive(MyHttpInput)]
 struct RevokeClientCertInputModel {
-    #[http_query(name = "caName", description = "Common name")]
-    pub ca_name: String,
     #[http_query(name = "email", description = "Email")]
     pub email: String,
 }

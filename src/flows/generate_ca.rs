@@ -4,7 +4,9 @@ use tokio::process::Command;
 
 use crate::{app::AppContext, flows::FlowError, pem::PemCertInfo};
 
-pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) -> Result<(), FlowError> {
+pub async fn generate_ca(app: &Arc<AppContext>, cert_info: PemCertInfo) -> Result<(), FlowError> {
+    crate::scripts::check_if_we_already_generated_ca(app).await?;
+
     init_vars(app, &cert_info).await;
 
     let easy_rsa_command = app.get_easy_rsa_command();

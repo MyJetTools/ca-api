@@ -2,7 +2,7 @@ use std::process::Output;
 
 #[derive(Debug)]
 pub enum FlowError {
-    CaNotFound,
+    CaAlreadyGenerated,
     CertNotFound,
     ValidationError(String),
     SomethingWentWrong(String),

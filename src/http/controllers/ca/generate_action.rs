@@ -30,7 +30,7 @@ async fn handle_request(
     input_data: GenerateCaInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    crate::flows::ca::generate(
+    crate::flows::generate_ca(
         &action.app,
         PemCertInfo {
             ca_cn: input_data.ca_name,
@@ -40,7 +40,7 @@ async fn handle_request(
             email: input_data.email,
         },
     )
-    .await;
+    .await?;
 
     return HttpOutput::Empty.into_ok_result(true).into();
 }

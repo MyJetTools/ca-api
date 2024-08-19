@@ -5,7 +5,9 @@ use crate::flows::FlowError;
 impl From<FlowError> for HttpFailResult {
     fn from(value: FlowError) -> Self {
         match value {
-            FlowError::CaNotFound => Self::as_forbidden("Ca not found".to_string().into()),
+            FlowError::CaAlreadyGenerated => {
+                Self::as_forbidden("Ca is already generated".to_string().into())
+            }
             FlowError::CertNotFound => {
                 Self::as_forbidden("Certification is not found".to_string().into())
             }

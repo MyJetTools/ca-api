@@ -31,6 +31,7 @@ async fn handle_request(
     input_data: GetRevokedCertsInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
+    /*
     let path = action
         .app
         .settings
@@ -51,6 +52,9 @@ async fn handle_request(
                 .into();
         }
     }
+     */
+
+    todo!("Implement");
 }
 
 #[derive(MyHttpInput)]

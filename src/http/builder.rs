@@ -15,9 +15,9 @@ pub fn build_controllers(app: &Arc<AppContext>) -> ControllersMiddleware {
         crate::http::controllers::client_certs::GenerateCertificateAction::new(app.clone()),
     ));
 
-    //result.register_delete_action(Arc::new(
-    //    crate::http::controllers::client_certs::RevokeCertificateAction::new(app.clone()),
-    //));
+    result.register_delete_action(Arc::new(
+        crate::http::controllers::client_certs::RevokeCertificateAction::new(app.clone()),
+    ));
 
     result.register_get_action(Arc::new(
         crate::http::controllers::client_certs::DownloadCertAction::new(app.clone()),

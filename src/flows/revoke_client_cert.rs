@@ -1,10 +1,24 @@
 use tokio::process::Command;
 
-use crate::{app::AppContext, storage::cert::ClientCertPath};
+use crate::app::AppContext;
 
 use super::FlowError;
 
-pub async fn revoke_cert(app: &AppContext, ca_cn: &str, email: &str) -> Result<(), FlowError> {
+pub async fn revoke_client_cert(app: &AppContext, email: &str) -> Result<(), FlowError> {
+    let easy_rsa_command = app.get_easy_rsa_command();
+
+    let result = Command::new(easy_rsa_command.as_str())
+        .arg("revoke")
+        .arg(email)
+        .output()
+        .await
+        .unwrap();
+
+    FlowError::check_error(&result)?;
+
+    Ok(())
+
+    /*
     let ca_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
 
     let ca_private_key_file_name = ca_path.to_ca_private_key_file_name();
@@ -62,4 +76,5 @@ pub async fn revoke_cert(app: &AppContext, ca_cn: &str, email: &str) -> Result<(
     }
 
     Ok(())
+     */
 }
