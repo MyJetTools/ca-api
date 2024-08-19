@@ -4,4 +4,5 @@ pub enum FlowError {
     CertNotFound,
     ValidationError(String),
     SomethingWentWrong(String),
+    EasyRsaError(String),
 }

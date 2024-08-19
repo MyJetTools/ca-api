@@ -10,7 +10,8 @@ impl From<FlowError> for HttpFailResult {
                 Self::as_forbidden("Certification is not found".to_string().into())
             }
             FlowError::ValidationError(err) => Self::as_forbidden(err.into()),
-            FlowError::SomethingWentWrong(err) => Self::as_forbidden(err.to_string().into()),
+            FlowError::SomethingWentWrong(err) => Self::as_forbidden(err.into()),
+            FlowError::EasyRsaError(err) => Self::as_fatal_error(err.into()),
         }
     }
 }

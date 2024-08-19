@@ -31,15 +31,12 @@ async fn handle_request(
     input_data: GenerateCertificateInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    crate::flows::generate_cert(&action.app, &input_data.ca_name, &input_data.email).await?;
+    crate::flows::generate_cert(&action.app, &input_data.email).await?;
     HttpOutput::Empty.into_ok_result(true).into()
 }
 
 #[derive(MyHttpInput)]
 pub struct GenerateCertificateInputModel {
-    #[http_body(name = "caName", description = "Common name")]
-    pub ca_name: String,
-
     #[http_body(name = "email", description = "Email")]
     pub email: String,
 }

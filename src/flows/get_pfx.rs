@@ -9,60 +9,57 @@ use crate::{app::AppContext, config_path, storage::cert::ClientCertPath};
 
 use super::FlowError;
 
-pub async fn get_pfx(
-    app: &AppContext,
-    ca_cn: &str,
-    email: &str,
-    password: &str,
-) -> Result<Vec<u8>, FlowError> {
-    let ca_data_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
+pub async fn get_pfx(app: &AppContext, email: &str, password: &str) -> Result<Vec<u8>, FlowError> {
+    Ok(vec![])
+    /*
+       let ca_data_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
 
-    let ca_cert_file_name = ca_data_path.to_ca_cert_file_name();
+       let ca_cert_file_name = ca_data_path.to_ca_cert_file_name();
 
-    //let ca = client_cert_path.into_ca_data_path(ca_cn);
+       //let ca = client_cert_path.into_ca_data_path(ca_cn);
 
-    let client_cert_path = ca_data_path.into_client_cert_path(email);
+       let client_cert_path = ca_data_path.into_client_cert_path(email);
 
-    let pfx_file_name = client_cert_path.to_pfx_file_name();
+       let pfx_file_name = client_cert_path.to_pfx_file_name();
 
-    println!("PFX file name: '{}'", pfx_file_name.as_str());
+       println!("PFX file name: '{}'", pfx_file_name.as_str());
 
-    println!(
-        "Private Key File: '{}'",
-        client_cert_path.to_private_key_file_name().as_str()
-    );
+       println!(
+           "Private Key File: '{}'",
+           client_cert_path.to_private_key_file_name().as_str()
+       );
 
-    println!(
-        "Cert File: '{}'",
-        client_cert_path.to_cert_file_name().as_str()
-    );
+       println!(
+           "Cert File: '{}'",
+           client_cert_path.to_cert_file_name().as_str()
+       );
 
-    println!("CA Cert File: '{}'", ca_cert_file_name.as_str());
+       println!("CA Cert File: '{}'", ca_cert_file_name.as_str());
 
-    let output = Command::new("openssl")
-        .arg("pkcs12")
-        .arg("-export")
-        .arg("-legacy")
-        .arg("-out")
-        .arg(pfx_file_name.as_str())
-        .arg("-inkey")
-        .arg(client_cert_path.to_private_key_file_name().as_str())
-        .arg("-in")
-        .arg(client_cert_path.to_cert_file_name().as_str())
-        .arg("-certfile")
-        .arg(ca_cert_file_name.as_str())
-        .arg("-passout")
-        .arg(format!("pass:{}", password))
-        .output()
-        .await
-        .unwrap();
+       let output = Command::new("openssl")
+           .arg("pkcs12")
+           .arg("-export")
+           .arg("-legacy")
+           .arg("-out")
+           .arg(pfx_file_name.as_str())
+           .arg("-inkey")
+           .arg(client_cert_path.to_private_key_file_name().as_str())
+           .arg("-in")
+           .arg(client_cert_path.to_cert_file_name().as_str())
+           .arg("-certfile")
+           .arg(ca_cert_file_name.as_str())
+           .arg("-passout")
+           .arg(format!("pass:{}", password))
+           .output()
+           .await
+           .unwrap();
 
-    println!("Output: {:?}", output);
+       println!("Output: {:?}", output);
 
-    let content = tokio::fs::read(pfx_file_name.as_str()).await.unwrap();
+       let content = tokio::fs::read(pfx_file_name.as_str()).await.unwrap();
 
-    Ok(content)
-
+       Ok(content)
+    */
     /*
     let private_key = crate::storage::cert::load_pem_private_key(app, ca_cn, email).await;
 

@@ -30,13 +30,8 @@ async fn handle_request(
     input_data: DownloadClientCertInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    let result = crate::flows::get_pfx(
-        &action.app,
-        &input_data.ca_name,
-        &input_data.email,
-        &input_data.password,
-    )
-    .await?;
+    let result =
+        crate::flows::get_pfx(&action.app, &input_data.email, &input_data.password).await?;
 
     let file_name = format!("{}.pfx", input_data.email);
 
@@ -47,8 +42,6 @@ async fn handle_request(
 
 #[derive(MyHttpInput)]
 struct DownloadClientCertInputModel {
-    #[http_query(name = "caName", description = "Common name")]
-    pub ca_name: String,
     #[http_query(name = "email", description = "Email")]
     pub email: String,
     #[http_query(name = "password", description = "Certificate Password")]
