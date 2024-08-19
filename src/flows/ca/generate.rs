@@ -17,10 +17,12 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
 
     println!("Init PKI Output: {:?}", result);
 
+    println!("Creating Directory: {}", app.get_private_dir());
     tokio::fs::create_dir_all(app.get_private_dir())
         .await
         .unwrap();
 
+    println!("Creating Directory: {}", app.get_reqs_dir());
     tokio::fs::create_dir_all(app.get_reqs_dir()).await.unwrap();
 
     let result = Command::new(easy_rsa_command.as_str())
