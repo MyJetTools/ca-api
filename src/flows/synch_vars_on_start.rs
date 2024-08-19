@@ -11,6 +11,7 @@ pub async fn sync_vars_on_start(app: &Arc<AppContext>) {
 
     if vars_content.is_err() {
         println!("Looks like no CA was generated yet. Skipping sync vars on start.");
+        return;
     }
 
     let vars_content = vars_content.unwrap();
