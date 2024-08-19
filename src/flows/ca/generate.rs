@@ -153,6 +153,7 @@ async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
     to_write.push_str("set_var EASYRSA_KEY_SIZE 4096\n");
     to_write.push_str("set_var EASYRSA_CA_EXPIRE 3650\n");
     to_write.push_str("set_var EASYRSA_CERT_EXPIRE 3650\n");
+    to_write.push_str("set_var EASYRSA_BATCH \"1\"\n");
 
     let file_path = app.get_vars_path();
 
