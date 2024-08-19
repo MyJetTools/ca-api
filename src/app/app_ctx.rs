@@ -55,6 +55,9 @@ impl AppContext {
     }
 
     pub fn get_client_cert_pfx_file(&self, email: &str) -> String {
-        format!("/usr/share/easy-rsa/pki/issued/{}.pfx", email)
+        let mut temp_dir = self.settings.get_temp_dir().into_string();
+        temp_dir.push_str(format!("/{}.pfx", email).as_str());
+
+        temp_dir
     }
 }

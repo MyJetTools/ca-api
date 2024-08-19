@@ -11,3 +11,5 @@ mod revoke_client_cert;
 pub use revoke_client_cert::*;
 mod generate_ca;
 pub use generate_ca::*;
+mod synch_vars_on_start;
+pub use synch_vars_on_start::*;

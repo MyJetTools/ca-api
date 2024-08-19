@@ -15,6 +15,9 @@ mod temp_dir;
 async fn main() {
     let app = AppContext::new().await;
     let app = Arc::new(app);
+
+    crate::flows::sync_vars_on_start(&app).await;
+
     crate::http::start(&app);
     app.app_states.wait_until_shutdown().await;
 }

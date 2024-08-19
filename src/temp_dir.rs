@@ -14,4 +14,8 @@ impl TempDir {
     pub fn to_temp_vars_file(&self) -> String {
         format!("{}/vars", self.path)
     }
+
+    pub fn into_string(self) -> String {
+        self.path
+    }
 }
