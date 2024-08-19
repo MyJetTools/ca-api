@@ -19,7 +19,7 @@ pub async fn get_pfx(app: &AppContext, email: &str, password: &str) -> Result<Ve
         .arg(private_key_file.as_str())
         .arg("-in")
         .arg(client_cert_file.as_str())
-        .arg("password")
+        .arg("-password")
         .arg(format!("pass:{}", password))
         .output()
         .await
