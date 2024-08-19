@@ -37,4 +37,12 @@ impl AppContext {
     pub fn get_pki_path(&self) -> &str {
         "/usr/share/easy-rsa/pki"
     }
+
+    pub fn get_private_dir(&self) -> &str {
+        "/usr/share/easy-rsa/pki/private"
+    }
+
+    pub fn get_reqs_dir(&self) -> &str {
+        "/usr/share/easy-rsa/pki/reqs"
+    }
 }

@@ -6,6 +6,7 @@ use crate::{app::AppContext, pem::PemCertInfo};
 
 pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
     init_vars(app, &cert_info).await;
+
     let easy_rsa_command = app.get_easy_rsa_command();
 
     let result = Command::new(easy_rsa_command.as_str())
@@ -15,6 +16,12 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
         .unwrap();
 
     println!("Init PKI Output: {:?}", result);
+
+    tokio::fs::create_dir_all(app.get_private_dir())
+        .await
+        .unwrap();
+
+    tokio::fs::create_dir_all(app.get_reqs_dir()).await.unwrap();
 
     let result = Command::new(easy_rsa_command.as_str())
         .arg("build-ca")
