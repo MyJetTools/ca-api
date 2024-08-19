@@ -5,22 +5,20 @@ use crate::app::AppContext;
 use super::FlowError;
 
 pub async fn get_pfx(app: &AppContext, email: &str, password: &str) -> Result<Vec<u8>, FlowError> {
-    let easy_rsa_command = app.get_easy_rsa_command();
-
     let private_key_file = app.get_client_cert_private_key_file(email);
     let client_cert_file = app.get_client_cert_file(email);
 
     let pfx_file = app.get_client_cert_pfx_file(email);
 
-    let result = Command::new(easy_rsa_command.as_str())
+    let result = Command::new("openssl")
         .arg("pkcs12")
+        .arg("-export")
+        .arg("-out")
+        .arg(pfx_file.as_str())
         .arg("-inkey")
         .arg(private_key_file.as_str())
         .arg("-in")
         .arg(client_cert_file.as_str())
-        .arg("-export")
-        .arg("-out")
-        .arg(pfx_file.as_str())
         .arg("password")
         .arg(format!("pass:{}", password))
         .output()

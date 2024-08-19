@@ -2,9 +2,9 @@ use std::sync::Arc;
 
 use tokio::process::Command;
 
-use crate::{app::AppContext, pem::PemCertInfo};
+use crate::{app::AppContext, flows::FlowError, pem::PemCertInfo};
 
-pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
+pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) -> Result<(), FlowError> {
     init_vars(app, &cert_info).await;
 
     let easy_rsa_command = app.get_easy_rsa_command();
@@ -15,7 +15,7 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
         .await
         .unwrap();
 
-    println!("Init PKI Output: {:?}", result);
+    FlowError::check_error(&result)?;
 
     println!("Creating Directory: {}", app.get_private_dir());
     tokio::fs::create_dir_all(app.get_private_dir())
@@ -32,7 +32,9 @@ pub async fn generate(app: &Arc<AppContext>, cert_info: PemCertInfo) {
         .await
         .unwrap();
 
-    println!("Build CA Output: {:?}", result);
+    FlowError::check_error(&result)?;
+
+    Ok(())
 
     /*
     let ca_path = app
