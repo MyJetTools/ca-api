@@ -13,6 +13,7 @@ pub async fn get_pfx(app: &AppContext, email: &str, password: &str) -> Result<Ve
     let result = Command::new("openssl")
         .arg("pkcs12")
         .arg("-export")
+        .arg("-legacy")
         .arg("-out")
         .arg(pfx_file.as_str())
         .arg("-inkey")
