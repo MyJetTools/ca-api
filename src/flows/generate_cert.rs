@@ -17,9 +17,7 @@ pub async fn generate_cert(app: &Arc<AppContext>, email: &str) -> Result<(), Flo
         .await
         .unwrap();
 
-    if !result.status.success() {
-        return Err(FlowError::EasyRsaError(format!("{:#?}", result)));
-    }
+    FlowError::check_error(&result)?;
 
     /*
        let ca_path = app.settings.get_config_path().into_ca_data_path(ca_cn);

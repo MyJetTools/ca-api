@@ -45,4 +45,16 @@ impl AppContext {
     pub fn get_reqs_dir(&self) -> &str {
         "/usr/share/easy-rsa/pki/reqs"
     }
+
+    pub fn get_client_cert_private_key_file(&self, email: &str) -> String {
+        format!("/usr/share/easy-rsa/pki/private/{}.key", email)
+    }
+
+    pub fn get_client_cert_file(&self, email: &str) -> String {
+        format!("/usr/share/easy-rsa/pki/issued/{}.crt", email)
+    }
+
+    pub fn get_client_cert_pfx_file(&self, email: &str) -> String {
+        format!("/usr/share/easy-rsa/pki/issued/{}.pfx", email)
+    }
 }

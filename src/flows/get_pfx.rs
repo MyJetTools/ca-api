@@ -1,16 +1,37 @@
-use openssl::{
-    pkey::{PKey, Private},
-    stack::Stack,
-    x509::X509,
-};
 use tokio::process::Command;
 
-use crate::{app::AppContext, config_path, storage::cert::ClientCertPath};
+use crate::app::AppContext;
 
 use super::FlowError;
 
 pub async fn get_pfx(app: &AppContext, email: &str, password: &str) -> Result<Vec<u8>, FlowError> {
-    Ok(vec![])
+    let easy_rsa_command = app.get_easy_rsa_command();
+
+    let private_key_file = app.get_client_cert_private_key_file(email);
+    let client_cert_file = app.get_client_cert_file(email);
+
+    let pfx_file = app.get_client_cert_pfx_file(email);
+
+    let result = Command::new(easy_rsa_command.as_str())
+        .arg("pkcs12")
+        .arg("-inkey")
+        .arg(private_key_file.as_str())
+        .arg("-in")
+        .arg(client_cert_file.as_str())
+        .arg("-export")
+        .arg("-out")
+        .arg(pfx_file.as_str())
+        .arg("password")
+        .arg(format!("pass:{}", password))
+        .output()
+        .await
+        .unwrap();
+
+    FlowError::check_error(&result)?;
+
+    let content = tokio::fs::read(pfx_file.as_str()).await.unwrap();
+
+    Ok(content)
     /*
        let ca_data_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
 
