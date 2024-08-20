@@ -45,9 +45,9 @@ pub fn build_controllers(app: &Arc<AppContext>) -> ControllersMiddleware {
     //        app.clone(),
     //    )));
 
-    //    result.register_get_action(Arc::new(
-    //        crate::http::controllers::ca::DownloadCertAction::new(app.clone()),
-    //    ));
+    result.register_get_action(Arc::new(
+        crate::http::controllers::ca::DownloadCertAction::new(app.clone()),
+    ));
 
     //    result.register_get_action(Arc::new(
     //        crate::http::controllers::ca::DownloadRevokedAction::new(app.clone()),

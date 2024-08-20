@@ -11,7 +11,6 @@ use crate::app::AppContext;
     summary: "Download certificate file",
     description: "Download certificate file",
     controller: "Certificate Authority",
-    input_data: "DownloadCaCertInputModel",
     result:[
         {status_code: 200, description: "Certificate as a text"},
     ]
@@ -27,19 +26,13 @@ impl DownloadCertAction {
 }
 async fn handle_request(
     action: &DownloadCertAction,
-    input_data: DownloadCaCertInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    let content =
-        crate::storage::ca::load_certificate(&action.app, input_data.ca_name.as_str()).await;
-
-    return HttpOutput::as_text(content.into())
-        .into_ok_result(true)
-        .into();
-}
-
-#[derive(MyHttpInput)]
-struct DownloadCaCertInputModel {
-    #[http_query(name = "caName", description = "Common name")]
-    pub ca_name: String,
+    match tokio::fs::read_to_string(action.app.get_ca_cert_file()).await {
+        Ok(content) => HttpOutput::as_text(content).into_ok_result(true).into(),
+        Err(err) => Err(HttpFailResult::as_not_found(
+            format!("Failed to read certificate file. Err: {:?}", err),
+            false,
+        )),
+    }
 }

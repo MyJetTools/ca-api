@@ -2,7 +2,16 @@ use std::sync::Arc;
 
 use tokio::process::Command;
 
-use crate::{app::AppContext, flows::FlowError, pem::PemCertInfo};
+use crate::{app::AppContext, flows::FlowError};
+
+#[derive(Debug)]
+pub struct PemCertInfo {
+    pub ca_cn: String,
+    pub organization: String,
+    pub country_code: String,
+    pub city: String,
+    pub email: String,
+}
 
 pub async fn generate_ca(app: &Arc<AppContext>, cert_info: PemCertInfo) -> Result<(), FlowError> {
     crate::scripts::check_if_we_already_generated_ca(app).await?;
