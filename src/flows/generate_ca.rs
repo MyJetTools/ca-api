@@ -17,7 +17,9 @@ pub async fn generate_ca(app: &Arc<AppContext>, cert_info: PemCertInfo) -> Resul
         .await
         .unwrap();
 
-    FlowError::check_error(&result)?;
+    println!("Init PKI Output: {:?}", result);
+
+    //FlowError::check_error(&result)?;
 
     println!("Creating Directory: {}", app.get_private_dir());
     tokio::fs::create_dir_all(app.get_private_dir())
