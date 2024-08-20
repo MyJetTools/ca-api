@@ -13,3 +13,5 @@ mod generate_ca;
 pub use generate_ca::*;
 mod synch_vars_on_start;
 pub use synch_vars_on_start::*;
+mod get_crl;
+pub use get_crl::*;
