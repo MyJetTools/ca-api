@@ -180,7 +180,7 @@ async fn init_vars(app: &Arc<AppContext>, cert_info: &PemCertInfo) {
         .await
         .unwrap();
 
-    let file_path = app.get_pki_vars_path();
+    let file_path = app.settings.get_temp_dir().to_temp_vars_file();
     tokio::fs::write(file_path, to_write.as_str())
         .await
         .unwrap();
