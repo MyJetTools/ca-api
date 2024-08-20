@@ -30,10 +30,6 @@ impl AppContext {
         "/usr/share/easy-rsa/vars"
     }
 
-    pub fn get_pki_vars_path(&self) -> &str {
-        "/usr/share/easy-rsa/pki/vars"
-    }
-
     pub fn get_pki_path(&self) -> &str {
         "/usr/share/easy-rsa/pki"
     }
@@ -52,6 +48,10 @@ impl AppContext {
 
     pub fn get_client_cert_file(&self, email: &str) -> String {
         format!("/usr/share/easy-rsa/pki/issued/{}.crt", email)
+    }
+
+    pub fn get_crl_file(&self) -> String {
+        format!("/usr/share/easy-rsa/pki/crl.pem")
     }
 
     pub fn get_client_cert_pfx_file(&self, email: &str) -> String {

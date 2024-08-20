@@ -29,6 +29,6 @@ async fn handle_request(
     action: &GetCrlAction,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    crate::flows::get_crl(&action.app).await?;
-    return HttpOutput::Empty.into_ok_result(true).into();
+    let content = crate::flows::get_crl(&action.app).await?;
+    return HttpOutput::as_text(content).into_ok_result(true);
 }
