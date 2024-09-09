@@ -34,3 +34,10 @@ networks:
 
 
 ```
+
+
+.ca-api File example
+
+```yaml
+temp_dir: /root/temp
+```
