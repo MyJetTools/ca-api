@@ -31,9 +31,9 @@ async fn handle_request(
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
     let result =
-        crate::flows::get_pfx(&action.app, &input_data.email, &input_data.password).await?;
+        crate::flows::get_p12(&action.app, &input_data.email, &input_data.password).await?;
 
-    let file_name = format!("{}.pfx", input_data.email);
+    let file_name = format!("{}.p12", input_data.email);
 
     return HttpOutput::as_file(file_name, result)
         .into_ok_result(true)
