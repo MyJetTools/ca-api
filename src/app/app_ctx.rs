@@ -58,13 +58,14 @@ impl AppContext {
         format!("/usr/share/easy-rsa/pki/ca.crt")
     }
 
-    pub fn get_client_cert_pfx_file_name(&self, email: &str) -> String {
-        let mut temp_dir = self.settings.get_temp_dir().into_string();
-        temp_dir.push_str(format!("/{}.pfx", email).as_str());
+    /*
+       pub fn get_client_cert_pfx_file_name(&self, email: &str) -> String {
+           let mut temp_dir = self.settings.get_temp_dir().into_string();
+           temp_dir.push_str(format!("/{}.pfx", email).as_str());
 
-        temp_dir
-    }
-
+           temp_dir
+       }
+    */
     pub fn get_client_cert_p12_file_name(&self, email: &str) -> String {
         let mut temp_dir = self.settings.get_temp_dir().into_string();
         temp_dir.push_str(format!("/{}.p12", email).as_str());

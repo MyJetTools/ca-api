@@ -31,6 +31,10 @@ pub fn build_controllers(app: &Arc<AppContext>) -> ControllersMiddleware {
         crate::http::controllers::client_certs::GetCrlAction::new(app.clone()),
     ));
 
+    result.register_get_action(Arc::new(
+        crate::http::controllers::client_certs::GetListOfCertificatesAction::new(app.clone()),
+    ));
+
     //CA Controller
 
     //    result.register_post_action(Arc::new(crate::http::controllers::ca::CheckCaAction::new(

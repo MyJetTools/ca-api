@@ -14,4 +14,8 @@ impl TempDir {
     pub fn into_string(self) -> String {
         self.path
     }
+
+    pub fn as_str(&self) -> &str {
+        self.path.as_str()
+    }
 }

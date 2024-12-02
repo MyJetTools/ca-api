@@ -15,3 +15,5 @@ mod synch_vars_on_start;
 pub use synch_vars_on_start::*;
 mod get_crl;
 pub use get_crl::*;
+mod get_list_of_issued_certificates;
+pub use get_list_of_issued_certificates::*;
