@@ -13,7 +13,7 @@ impl From<FlowError> for HttpFailResult {
             }
             FlowError::ValidationError(err) => Self::as_forbidden(err.into()),
             FlowError::SomethingWentWrong(err) => Self::as_forbidden(err.into()),
-            FlowError::EasyRsaError(err) => Self::as_fatal_error(err.into()),
+            FlowError::EasyRsaError(err) => Self::as_fatal_error(err),
         }
     }
 }

@@ -27,8 +27,6 @@ pem = "*"
 serde = { version = "*", features = ["derive"] }
 serde_json = "*"
 
-my-tls = { git = "https://github.com/MyJetTools/my-tls.git", tag = "0.1.5", features = [
-    "crl",
-] }
+my-tls = { git = "https://github.com/MyJetTools/my-tls.git", tag = "0.1.5" }
 openssl = "*"
 pkcs12 = "*"
