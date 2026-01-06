@@ -4,7 +4,7 @@ on:
     tags: "*"
 
 env:
-  IMAGE_NAME: myjettools/ca-api
+  IMAGE_NAME: ghcr.io/myjettools/ca-api
 
 jobs:
   build:
@@ -18,22 +18,19 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::$(echo ${GITHUB_REF_NAME})
-
+        
       - name: Updating version
         run: sed -i -e 's/^version = .*/version = "${{ steps.get_version.outputs.VERSION }}"/' Cargo.toml
-
-
-      - run: cargo build --release
+          
+      - run: |
+          export GIT_HUB_TOKEN="${{ secrets.PUBLISH_TOKEN }}"
+          cargo build --release
 
       - name: Docker login
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
         run: |          
-          echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin   
+          echo "${{ secrets.PUBLISH_TOKEN }}" | docker login https://ghcr.io -u "${{ github.actor }}" --password-stdin   
       - name: Docker Build and Publish
         run: |          
           docker build -t ${IMAGE_NAME}:${{ steps.get_version.outputs.VERSION }} .
           docker push ${IMAGE_NAME}:${{ steps.get_version.outputs.VERSION }}
-        
 

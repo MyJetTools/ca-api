@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-my-http-server = { tag = "0.8.2", git = "https://github.com/MyJetTools/my-http-server.git", features = [
+my-http-server = { tag = "0.8.3", git = "https://github.com/MyJetTools/my-http-server.git", features = [
     "static-files",
     "macros",
 ] }
@@ -27,7 +27,7 @@ pem = "*"
 serde = { version = "*", features = ["derive"] }
 serde_json = "*"
 
-my-tls = { git = "https://github.com/MyJetTools/my-tls.git", tag = "0.1.1", features = [
+my-tls = { git = "https://github.com/MyJetTools/my-tls.git", tag = "0.1.5", features = [
     "crl",
 ] }
 openssl = "*"
