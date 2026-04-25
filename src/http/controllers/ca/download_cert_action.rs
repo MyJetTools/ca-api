@@ -4,15 +4,17 @@ use my_http_server::macros::*;
 use my_http_server::*;
 
 use crate::app::AppContext;
+use crate::flows::FlowError;
 
 #[http_route(
     method: "GET",
     route: "/api/ca/v1/downloadCert",
-    summary: "Download certificate file",
-    description: "Download certificate file",
+    summary: "Download CA certificate file",
+    description: "Download CA certificate file",
     controller: "Certificate Authority",
+    input_data: "DownloadCaCertInputModel",
     result:[
-        {status_code: 200, description: "Certificate as a text"},
+        {status_code: 200, description: "CA certificate as PEM text"},
     ]
 )]
 pub struct DownloadCertAction {
@@ -26,13 +28,23 @@ impl DownloadCertAction {
 }
 async fn handle_request(
     action: &DownloadCertAction,
+    input_data: DownloadCaCertInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    match tokio::fs::read_to_string(action.app.get_ca_cert_file()).await {
+    let ca_path = action
+        .app
+        .settings
+        .get_config_path()
+        .into_ca_data_path(&input_data.ca_name);
+
+    match tokio::fs::read_to_string(ca_path.to_ca_cert_file_name()).await {
         Ok(content) => HttpOutput::as_text(content).into_ok_result(true).into(),
-        Err(err) => Err(HttpFailResult::as_not_found(
-            format!("Failed to read certificate file. Err: {:?}", err),
-            false,
-        )),
+        Err(_) => Err(FlowError::CaNotFound.into()),
     }
+}
+
+#[derive(MyHttpInput)]
+struct DownloadCaCertInputModel {
+    #[http_query(name = "caName", description = "CA Common Name")]
+    pub ca_name: String,
 }

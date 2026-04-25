@@ -8,12 +8,12 @@ use crate::app::AppContext;
 #[http_route(
     method: "GET",
     route: "/api/ca/v1/downloadRevokedPem",
-    summary: "Download revoked pem File",
-    description: "Download revoked pem File",
+    summary: "Download per-CA CRL",
+    description: "Download per-CA CRL",
     controller: "Certificate Authority",
     input_data: "DownloadRevokedInputModel",
     result:[
-        {status_code: 200, description: "Certificate as a text"},
+        {status_code: 200, description: "CRL as PEM text"},
     ]
 )]
 pub struct DownloadRevokedAction {
@@ -30,19 +30,12 @@ async fn handle_request(
     input_data: DownloadRevokedInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    let file_name = action
-        .app
-        .settings
-        .get_config_path()
-        .into_ca_data_path(input_data.ca_name.as_str())
-        .into_crl_file_name();
-
-    let content = tokio::fs::read_to_string(file_name).await.unwrap();
+    let content = crate::flows::get_crl(&action.app, &input_data.ca_name).await?;
     return HttpOutput::as_text(content).into_ok_result(true).into();
 }
 
 #[derive(MyHttpInput)]
 struct DownloadRevokedInputModel {
-    #[http_query(name = "caName", description = "Common name")]
+    #[http_query(name = "caName", description = "CA Common Name")]
     pub ca_name: String,
 }

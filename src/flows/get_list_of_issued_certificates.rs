@@ -1,30 +1,25 @@
+use std::sync::Arc;
+
 use crate::app::AppContext;
+use crate::storage::ca::load_index;
 
 pub struct IssuedCertificateInfo {
     pub cn: String,
     pub revoked: bool,
 }
 
-pub async fn get_list_of_issued_certificates(app: &AppContext) -> Vec<IssuedCertificateInfo> {
-    let temp_dir = app.settings.get_temp_dir();
+pub async fn get_list_of_issued_certificates(
+    app: &Arc<AppContext>,
+    ca_cn: &str,
+) -> Vec<IssuedCertificateInfo> {
+    let ca_path = app.settings.get_config_path().into_ca_data_path(ca_cn);
 
-    let mut dir_entry = tokio::fs::read_dir(temp_dir.as_str()).await.unwrap();
-
-    let mut result = Vec::new();
-
-    while let Some(entry) = dir_entry.next_entry().await.unwrap() {
-        if entry
-            .file_name()
-            .as_os_str()
-            .to_string_lossy()
-            .ends_with(".p12")
-        {
-            result.push(IssuedCertificateInfo {
-                cn: entry.file_name().as_os_str().to_string_lossy().to_string(),
-                revoked: false,
-            });
-        }
-    }
-
-    result
+    load_index(&ca_path)
+        .await
+        .into_iter()
+        .map(|r| IssuedCertificateInfo {
+            cn: r.cn,
+            revoked: r.revoked_at.is_some(),
+        })
+        .collect()
 }

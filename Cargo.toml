@@ -29,4 +29,5 @@ serde_json = "*"
 
 my-tls = { git = "https://github.com/MyJetTools/my-tls.git", tag = "0.1.5" }
 openssl = "*"
-pkcs12 = "*"
+rcgen = { version = "0.14", features = ["pem", "x509-parser"] }
+time = "0.3"

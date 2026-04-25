@@ -13,8 +13,9 @@ use crate::flows::IssuedCertificateInfo;
     summary: "Get list of certificates",
     description: "Get list of certificates",
     controller: "Client Certificates",
+    input_data: "GetListInputModel",
     result:[
-        {status_code: 200, description: "Certificate as a text"},
+        {status_code: 200, description: "List of issued certificates"},
     ]
 )]
 pub struct GetListOfCertificatesAction {
@@ -28,13 +29,20 @@ impl GetListOfCertificatesAction {
 }
 async fn handle_request(
     action: &GetListOfCertificatesAction,
+    input_data: GetListInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    let result = crate::flows::get_list_of_issued_certificates(&action.app).await;
+    let result = crate::flows::get_list_of_issued_certificates(&action.app, &input_data.ca_name).await;
 
     let response: Vec<IssuedCertificateHttpModel> = result.into_iter().map(|x| x.into()).collect();
 
     return HttpOutput::as_json(response).into_ok_result(true).into();
+}
+
+#[derive(MyHttpInput)]
+struct GetListInputModel {
+    #[http_query(name = "caName", description = "CA Common Name")]
+    pub ca_name: String,
 }
 
 #[derive(MyHttpInputObjectStructure, Serialize, Deserialize)]

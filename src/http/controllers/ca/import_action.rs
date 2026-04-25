@@ -14,7 +14,7 @@ use crate::app::AppContext;
     controller: "Certificate Authority",
     input_data: "ImportCaInputModel",
     result:[
-        {status_code: 202, description: "CA is generated"},
+        {status_code: 202, description: "CA is imported"},
     ]
 )]
 pub struct ImportCaAction {
@@ -37,19 +37,19 @@ async fn handle_request(
         input_data.private_key.content,
         input_data.cert.content,
     )
-    .await;
+    .await?;
 
     return HttpOutput::Empty.into_ok_result(true).into();
 }
 
 #[derive(MyHttpInput)]
 pub struct ImportCaInputModel {
-    #[http_form_data(name = "caName", description = "Common name")]
+    #[http_form_data(name = "caName", description = "CA Common Name")]
     pub ca_name: String,
 
     #[http_form_data(description = "Certificate")]
     pub cert: FileContent,
 
-    #[http_form_data(name="privateKey" description = "Private key")]
+    #[http_form_data(name = "privateKey", description = "Private key")]
     pub private_key: FileContent,
 }

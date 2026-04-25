@@ -8,12 +8,12 @@ use crate::app::AppContext;
 #[http_route(
     method: "POST",
     route: "/api/ca/v1/check",
-    summary: "Check CA certificate",
-    description: "Check CA certificate",
+    summary: "Check CA exists",
+    description: "Check CA exists",
     controller: "Certificate Authority",
     input_data: "CheckCaCertificateInputModel",
     result:[
-        {status_code: 200, description: "CA is generated"},
+        {status_code: 200, description: "CA is present"},
     ]
 )]
 pub struct CheckCaAction {
@@ -38,6 +38,6 @@ async fn handle_request(
 
 #[derive(MyHttpInput)]
 pub struct CheckCaCertificateInputModel {
-    #[http_body(name = "caName", description = "Common name")]
+    #[http_body(name = "caName", description = "CA Common Name")]
     pub ca_name: String,
 }

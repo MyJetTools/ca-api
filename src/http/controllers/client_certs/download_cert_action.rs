@@ -8,12 +8,12 @@ use crate::app::AppContext;
 #[http_route(
     method: "GET",
     route: "/api/certificates/v1/downloadCert",
-    summary: "Download pfx",
-    description: "Download pfx",
+    summary: "Download client certificate as PKCS#12",
+    description: "Download client certificate as PKCS#12",
     controller: "Client Certificates",
     input_data: "DownloadClientCertInputModel",
     result:[
-        {status_code: 200, description: "Certificate as a text"},
+        {status_code: 200, description: "PKCS#12 binary"},
     ]
 )]
 pub struct DownloadCertAction {
@@ -30,8 +30,13 @@ async fn handle_request(
     input_data: DownloadClientCertInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    let result =
-        crate::flows::get_p12(&action.app, &input_data.email, &input_data.password).await?;
+    let result = crate::flows::get_p12(
+        &action.app,
+        &input_data.ca_name,
+        &input_data.email,
+        &input_data.password,
+    )
+    .await?;
 
     let file_name = format!("{}.p12", input_data.email);
 
@@ -42,8 +47,12 @@ async fn handle_request(
 
 #[derive(MyHttpInput)]
 struct DownloadClientCertInputModel {
+    #[http_query(name = "caName", description = "CA Common Name")]
+    pub ca_name: String,
+
     #[http_query(name = "email", description = "Email")]
     pub email: String,
+
     #[http_query(name = "password", description = "Certificate Password")]
     pub password: String,
 }

@@ -4,5 +4,4 @@ pub struct PemCertInfo {
     pub organization: String,
     pub country_code: String,
     pub city: String,
-    pub email: String,
 }

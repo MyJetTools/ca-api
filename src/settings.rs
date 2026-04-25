@@ -1,21 +1,35 @@
 use serde::{Deserialize, Serialize};
 
-use crate::temp_dir::TempDir;
+use crate::storage::ca::CaDataPath;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SettingsModel {
-    pub temp_dir: String,
+    pub config_path: String,
 }
 
 impl SettingsModel {
-    pub fn get_temp_dir(&self) -> TempDir {
-        let mut result =
-            rust_extensions::file_utils::format_path(self.temp_dir.as_str()).to_string();
+    pub fn get_config_path(&self) -> ConfigPath {
+        let mut path =
+            rust_extensions::file_utils::format_path(self.config_path.as_str()).to_string();
 
-        if result.ends_with(std::path::MAIN_SEPARATOR) {
-            result.pop();
+        if path.ends_with(std::path::MAIN_SEPARATOR) {
+            path.pop();
         }
 
-        TempDir::new(result)
+        ConfigPath { path }
+    }
+}
+
+pub struct ConfigPath {
+    path: String,
+}
+
+impl ConfigPath {
+    pub fn as_str(&self) -> &str {
+        self.path.as_str()
+    }
+
+    pub fn into_ca_data_path(self, ca_cn: &str) -> CaDataPath {
+        CaDataPath::new(self.path, ca_cn)
     }
 }

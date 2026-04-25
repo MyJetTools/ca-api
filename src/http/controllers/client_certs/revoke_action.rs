@@ -13,7 +13,7 @@ use crate::app::AppContext;
     controller: "Client Certificates",
     input_data: "RevokeClientCertInputModel",
     result:[
-        {status_code: 200, description: "Certificate as a text"},
+        {status_code: 200, description: "Certificate is revoked"},
     ]
 )]
 pub struct RevokeCertificateAction {
@@ -30,13 +30,16 @@ async fn handle_request(
     input_data: RevokeClientCertInputModel,
     _ctx: &HttpContext,
 ) -> Result<HttpOkResult, HttpFailResult> {
-    crate::flows::revoke_client_cert(&action.app, &input_data.email).await?;
+    crate::flows::revoke_client_cert(&action.app, &input_data.ca_name, &input_data.email).await?;
 
     HttpOutput::Empty.into_ok_result(true)
 }
 
 #[derive(MyHttpInput)]
 struct RevokeClientCertInputModel {
+    #[http_query(name = "caName", description = "CA Common Name")]
+    pub ca_name: String,
+
     #[http_query(name = "email", description = "Email")]
     pub email: String,
 }
