@@ -19,7 +19,7 @@ config_path: /root/pki
 ```yaml
 services:
   ca-api:
-    image: myjettools/ca-api:0.2.0
+    image: ghcr.io/myjettools/ca-api:0.2.0
     hostname: ca-api
     container_name: ca-api
     restart: always
@@ -29,7 +29,7 @@ services:
           memory: 64Mb
     volumes:
       # settings file (single YAML file — must exist on host before `up`)
-      - ./ca-api:/root/.ca-api
+      - ./.ca-api:/root/.ca-api
       # PKI storage (directory — keeps CA roots, keys, CRLs, issued certs)
       - ./pki:/root/pki
     ports:
@@ -46,7 +46,7 @@ networks:
     external: true
 ```
 
-Where `./ca-api` on the host contains the YAML shown in [Configuration](#configuration).
+Where `./.ca-api` on the host contains the YAML shown in [Configuration](#configuration).
 
 
 ## Storage layout
